@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:oauth="http://spring-security-oauth.codehaus.org/3.0"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd
+              http://spring-security-oauth.codehaus.org/3.0 http://spring-security-oauth.codehaus.org/schema/spring-security-oauth-3.0.xsd
+              http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<oauth:consumer resource-details-service-ref="resourceDetailsService">
+		<oauth:url pattern="/*" resources="a_resource" />
+	</oauth:consumer>
+
+	<oauth:resource-details-service id="resourceDetailsService">
+
+		<oauth:resource
+		id="test"
+		key="test_key"
+		secret="test_secret"
+		request-token-url="http://test.com/OAuthGetRequestToken"
+		user-authorization-url="test.com/OAuthAuthorizeToken"
+		access-token-url="http://test.com/OAuthGetAccessToken" />
+	</oauth:resource-details-service>
+
+	<util:list id="validAdditionalOAuthParamNames_test">
+		<value>scope</value>
+		<value>xoauth_displayname</value>
+	</util:list>
+
+	<util:map id="validAdditionalOAuthParamNamesMap">
+		<entry key="test" value-ref="validAdditionalOAuthParamNames_test" />
+	</util:map>
+
+	<bean id="oauthConsumerSupport" class="com.adamvduke.spring.oauth.CoreOAuthConsumerSupport">
+		<property name="validAdditionalOAuthParamNamesMap" ref="validAdditionalOAuthParamNamesMap"/>
+		<property name="protectedResourceDetailsService" ref="resourceDetailsService"/>
+	</bean>
+
+</beans>
